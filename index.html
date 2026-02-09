@@ -10,88 +10,67 @@
 body {
   margin: 0;
   height: 100vh;
-  background: linear-gradient(180deg, #ff9a9e, #fad0c4);
-  overflow: hidden;
+  background: linear-gradient(180deg,#fde2e4,#fad0c4);
+  display: flex;
+  justify-content: center;
+  align-items: center;
   font-family: 'Playfair Display', serif;
+}
+
+.container {
+  background: #fff;
+  width: 90%;
+  max-width: 900px;
+  padding: 30px;
+  border-radius: 20px;
+  display: flex;
+  gap: 30px;
+  box-shadow: 0 20px 40px rgba(0,0,0,.2);
+}
+
+.text {
+  flex: 1;
+  opacity: 0;
+  animation: fadeIn 2s forwards;
+  animation-delay: 7s;
+  line-height: 1.8;
+}
+
+@keyframes fadeIn { to { opacity: 1; } }
+
+.tree {
+  flex: 1;
   display: flex;
   justify-content: center;
   align-items: center;
 }
 
-/* CONTENEDOR */
-.container {
-  background: #fff8f8;
-  width: 92%;
-  max-width: 900px;
-  padding: 30px;
-  border-radius: 20px;
-  display: flex;
-  gap: 20px;
-  box-shadow: 0 20px 40px rgba(0,0,0,.25);
+/* SVG */
+svg {
+  width: 220px;
 }
 
-/* TEXTO */
-.text {
-  flex: 1;
-  font-size: 1.2rem;
-  line-height: 1.8;
-  opacity: 0;
-  animation: showText 2s forwards;
-  animation-delay: 8s;
+.path {
+  fill: none;
+  stroke: #e63946;
+  stroke-width: 3;
+  stroke-dasharray: 1000;
+  stroke-dashoffset: 1000;
+  animation: draw 4s forwards;
 }
 
-@keyframes showText {
-  to { opacity: 1; }
+@keyframes draw {
+  to { stroke-dashoffset: 0; }
 }
 
-/* ÁRBOL */
-.tree {
-  flex: 1;
-  position: relative;
-  height: 320px;
-}
-
-/* GOTA */
-.drop {
-  position: absolute;
-  top: -60px;
-  left: 50%;
-  transform: translateX(-50%);
-  font-size: 30px;
-  animation: drop 2s forwards;
-}
-
-@keyframes drop {
-  to { top: 260px; }
-}
-
-/* TRONCO */
-.trunk {
-  position: absolute;
-  bottom: 0;
-  left: 50%;
-  width: 6px;
-  height: 0;
-  background: #6b3e2e;
-  transform: translateX(-50%);
-  animation: growTrunk 3s forwards;
-  animation-delay: 2s;
-}
-
-@keyframes growTrunk {
-  to { height: 180px; }
-}
-
-/* CORAZONES */
-.heart {
-  position: absolute;
-  font-size: 22px;
+.small-heart {
+  fill: #e63946;
   opacity: 0;
   animation: bloom 1s forwards;
 }
 
 @keyframes bloom {
-  to { opacity: 1; transform: scale(1.2); }
+  to { opacity: 1; transform: scale(1.1); }
 }
 </style>
 </head>
@@ -99,7 +78,7 @@ body {
 <body>
 
 <audio autoplay loop>
-  <source src="https://cdn.pixabay.com/audio/2023/02/14/audio_4b4d1bfa50.mp3" type="audio/mpeg">
+  <source src="https://cdn.pixabay.com/audio/2023/02/14/audio_4b4d1bfa50.mp3">
 </audio>
 
 <div class="container">
@@ -112,50 +91,49 @@ body {
   </div>
 
   <div class="tree">
-    <div class="drop">❤️</div>
-    <div class="trunk"></div>
+    <svg viewBox="0 0 100 120">
+      <!-- corazón perfecto -->
+      <path class="path"
+        d="M50 90
+           C20 60, 0 40, 25 25
+           C40 15, 50 30, 50 30
+           C50 30, 60 15, 75 25
+           C100 40, 80 60, 50 90" />
+
+      <!-- corazones pequeños -->
+      <g id="blooms"></g>
+    </svg>
   </div>
 </div>
 
 <script>
-/* FLORACIÓN */
-const tree = document.querySelector('.tree');
-const hearts = [
-  {x: -40, y: 80}, {x: 0, y: 60}, {x: 40, y: 80},
-  {x: -60, y: 40}, {x: 60, y: 40},
-  {x: -30, y: 20}, {x: 30, y: 20}
-];
-
+/* corazones que brotan */
 setTimeout(() => {
-  hearts.forEach((h, i) => {
-    setTimeout(() => {
-      const el = document.createElement('div');
-      el.className = 'heart';
-      el.innerHTML = '❤️';
-      el.style.left = `calc(50% + ${h.x}px)`;
-      el.style.bottom = `${180 + h.y}px`;
-      tree.appendChild(el);
-    }, i * 500);
+  const blooms = document.getElementById("blooms");
+  const points = [
+    [30,40],[70,40],[20,55],[80,55],[50,25]
+  ];
+
+  points.forEach((p,i)=>{
+    setTimeout(()=>{
+      const h = document.createElementNS("http://www.w3.org/2000/svg","path");
+      h.setAttribute("d","M5 8 C1 4,0 2,2 1 C3 0,5 2,5 2 C5 2,7 0,8 1 C10 2,9 4,5 8");
+      h.setAttribute("fill","#e63946");
+      h.setAttribute("class","small-heart");
+      h.setAttribute("transform",`translate(${p[0]},${p[1]}) scale(0.6)`);
+      blooms.appendChild(h);
+    }, i*600);
   });
-}, 5_000);
+}, 4000);
 
-/* CONTADOR */
+/* contador */
 const inicio = new Date("2026-02-01T00:00:00");
-
-function actualizar() {
-  const now = new Date();
-  let diff = now - inicio;
-  const s = Math.floor(diff/1000);
-  const m = Math.floor(s/60);
-  const h = Math.floor(m/60);
-  const d = Math.floor(h/24);
+setInterval(()=>{
+  const d = Math.floor((Date.now()-inicio)/1000);
+  const s=d%60,m=Math.floor(d/60)%60,h=Math.floor(d/3600)%24,di=Math.floor(d/86400);
   document.getElementById("contador").innerHTML =
-    `Mi amor por ti comenzó hace...<br>
-     ${d} días ${h%24} horas ${m%60} minutos ${s%60} segundos`;
-}
-
-setInterval(actualizar,1000);
-actualizar();
+    `Mi amor por ti comenzó hace...<br>${di} días ${h}h ${m}m ${s}s`;
+},1000);
 </script>
 
 </body>
