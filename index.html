@@ -15,21 +15,20 @@ body{
   display:flex;
   justify-content:center;
   align-items:center;
-  overflow:hidden;
+  overflow-x:auto;
   font-family:'Playfair Display',serif;
 }
 
-/* CONTENEDOR PRINCIPAL */
+/* CONTENEDOR SIEMPRE HORIZONTAL */
 .container{
   background:white;
-  width:96%;
-  max-width:1300px;
+  width:1300px;            /* 🔥 ancho fijo */
   padding:60px;
   border-radius:32px;
   display:flex;
-  flex-direction:row;
+  flex-direction:row;      /* 🔥 horizontal forzado */
   align-items:center;
-  gap:70px;
+  gap:80px;
   box-shadow:0 30px 60px rgba(0,0,0,.18);
   position:relative;
   z-index:2;
@@ -38,12 +37,12 @@ body{
 /* TEXTO */
 .text{
   flex:1.1;
-  font-size:1.55em;
+  font-size:1.6em;
   line-height:2.1;
 }
 
 .text h2{
-  font-size:2.6em;
+  font-size:2.7em;
   margin-bottom:25px;
 }
 
@@ -65,7 +64,7 @@ svg{
   width:520px;
 }
 
-/* CORAZÓN PRINCIPAL */
+/* CORAZÓN SVG */
 .heart-path{
   fill:none;
   stroke:#f28482;
@@ -86,7 +85,7 @@ svg{
   50%{transform:scale(1.05)}
 }
 
-/* CORAZONES CAYENDO */
+/* CORAZONES PASTEL CAYENDO */
 .falling-heart{
   position:absolute;
   top:-40px;
@@ -101,19 +100,6 @@ svg{
   to{
     transform:translateY(130vh) rotate(360deg);
     opacity:0;
-  }
-}
-
-/* RESPONSIVE */
-@media(max-width:900px){
-  .container{
-    flex-direction:column;
-    text-align:center;
-    gap:40px;
-    padding:40px;
-  }
-  svg{
-    width:380px;
   }
 }
 </style>
@@ -157,7 +143,7 @@ setInterval(()=>{
   `Mi amor por ti comenzó hace:<br>${di} días ${h}h ${m}m ${s}s`;
 },1000);
 
-// CORAZONES PASTEL CAYENDO
+// LLUVIA DE CORAZONES
 const pastel=["#f28482","#f7cad0","#ffd6e0","#cdb4db"];
 
 setInterval(()=>{
