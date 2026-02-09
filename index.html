@@ -8,91 +8,90 @@
 @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500&display=swap');
 
 body {
-    margin: 0;
-    height: 100vh;
-    background: linear-gradient(180deg, #ff9a9e, #fad0c4);
-    overflow: hidden;
-    font-family: 'Playfair Display', serif;
+  margin: 0;
+  height: 100vh;
+  background: linear-gradient(180deg, #ff9a9e, #fad0c4);
+  overflow: hidden;
+  font-family: 'Playfair Display', serif;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
+/* CONTENEDOR */
 .container {
-    position: relative;
-    background: #fff8f8;
-    width: 92%;
-    max-width: 900px;
-    margin: auto;
-    top: 50%;
-    transform: translateY(-50%);
-    padding: 30px;
-    border-radius: 18px;
-    display: flex;
-    gap: 20px;
-    box-shadow: 0 20px 40px rgba(0,0,0,.25);
-    z-index: 2;
+  background: #fff8f8;
+  width: 92%;
+  max-width: 900px;
+  padding: 30px;
+  border-radius: 20px;
+  display: flex;
+  gap: 20px;
+  box-shadow: 0 20px 40px rgba(0,0,0,.25);
 }
 
+/* TEXTO */
 .text {
-    flex: 1;
-    font-size: 1.2rem;
-    line-height: 1.8;
+  flex: 1;
+  font-size: 1.2rem;
+  line-height: 1.8;
+  opacity: 0;
+  animation: showText 2s forwards;
+  animation-delay: 8s;
 }
 
-.text h2 {
-    color: #e63946;
-    margin-top: 0;
+@keyframes showText {
+  to { opacity: 1; }
 }
 
-.counter {
-    margin-top: 20px;
-    font-weight: bold;
-    color: #555;
-}
-
-/* 🌳 ÁRBOL DE CORAZONES */
+/* ÁRBOL */
 .tree {
-    flex: 1;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+  flex: 1;
+  position: relative;
+  height: 320px;
 }
 
-.heart-tree {
-    position: relative;
-    width: 200px;
-    height: 280px;
+/* GOTA */
+.drop {
+  position: absolute;
+  top: -60px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 30px;
+  animation: drop 2s forwards;
 }
 
-.heart {
-    position: absolute;
-    color: #e63946;
-    font-size: 24px;
-    animation: beat 2s infinite;
+@keyframes drop {
+  to { top: 260px; }
 }
 
-@keyframes beat {
-    0%, 100% { transform: scale(1); }
-    50% { transform: scale(1.2); }
-}
-
-/* Tronco */
+/* TRONCO */
 .trunk {
-    position: absolute;
-    bottom: 0;
-    left: 50%;
-    transform: translateX(-50%);
-    font-size: 40px;
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  width: 6px;
+  height: 0;
+  background: #6b3e2e;
+  transform: translateX(-50%);
+  animation: growTrunk 3s forwards;
+  animation-delay: 2s;
 }
 
-/* Corazones cayendo */
-.fall {
-    position: absolute;
-    color: rgba(255,0,100,.8);
-    animation: fall linear infinite;
+@keyframes growTrunk {
+  to { height: 180px; }
 }
 
-@keyframes fall {
-    0% { transform: translateY(-10vh); opacity: 1; }
-    100% { transform: translateY(110vh); opacity: 0; }
+/* CORAZONES */
+.heart {
+  position: absolute;
+  font-size: 22px;
+  opacity: 0;
+  animation: bloom 1s forwards;
+}
+
+@keyframes bloom {
+  to { opacity: 1; transform: scale(1.2); }
 }
 </style>
 </head>
@@ -104,74 +103,59 @@ body {
 </audio>
 
 <div class="container">
-    <div class="text">
-        <h2>Para el amor de mi vida:</h2>
+  <div class="text">
+    <h2>Para el amor de mi vida:</h2>
+    <p>Si pudiera elegir un lugar seguro, sería a tu lado.</p>
+    <p>Cuanto más tiempo estoy contigo, más me voy enamorando.</p>
+    <p><strong>Te quiero mucho.</strong></p>
+    <div id="contador"></div>
+  </div>
 
-        <p>
-            Si pudiera elegir un lugar seguro, sería a tu lado.
-        </p>
-
-        <p>
-            Cuanto más tiempo estoy contigo, más me voy enamorando.
-        </p>
-
-        <p><strong>Te quiero mucho.</strong></p>
-
-        <div class="counter" id="contador"></div>
-    </div>
-
-    <div class="tree">
-        <div class="heart-tree">
-            <!-- copa -->
-            <span class="heart" style="top:20px; left:80px;">❤️</span>
-            <span class="heart" style="top:40px; left:40px;">❤️</span>
-            <span class="heart" style="top:40px; left:120px;">❤️</span>
-            <span class="heart" style="top:70px; left:20px;">❤️</span>
-            <span class="heart" style="top:70px; left:80px;">❤️</span>
-            <span class="heart" style="top:70px; left:140px;">❤️</span>
-            <span class="heart" style="top:110px; left:50px;">❤️</span>
-            <span class="heart" style="top:110px; left:110px;">❤️</span>
-
-            <!-- tronco -->
-            <div class="trunk">🤎</div>
-        </div>
-    </div>
+  <div class="tree">
+    <div class="drop">❤️</div>
+    <div class="trunk"></div>
+  </div>
 </div>
 
 <script>
-/* ⏳ CONTADOR */
+/* FLORACIÓN */
+const tree = document.querySelector('.tree');
+const hearts = [
+  {x: -40, y: 80}, {x: 0, y: 60}, {x: 40, y: 80},
+  {x: -60, y: 40}, {x: 60, y: 40},
+  {x: -30, y: 20}, {x: 30, y: 20}
+];
+
+setTimeout(() => {
+  hearts.forEach((h, i) => {
+    setTimeout(() => {
+      const el = document.createElement('div');
+      el.className = 'heart';
+      el.innerHTML = '❤️';
+      el.style.left = `calc(50% + ${h.x}px)`;
+      el.style.bottom = `${180 + h.y}px`;
+      tree.appendChild(el);
+    }, i * 500);
+  });
+}, 5_000);
+
+/* CONTADOR */
 const inicio = new Date("2026-02-01T00:00:00");
 
-function actualizarContador() {
-    const ahora = new Date();
-    let diff = ahora - inicio;
-
-    const s = Math.floor(diff / 1000);
-    const m = Math.floor(s / 60);
-    const h = Math.floor(m / 60);
-    const d = Math.floor(h / 24);
-
-    document.getElementById("contador").innerHTML =
-        `Mi amor por ti comenzó hace...<br>
-        ${d} días ${h%24} horas ${m%60} minutos ${s%60} segundos`;
+function actualizar() {
+  const now = new Date();
+  let diff = now - inicio;
+  const s = Math.floor(diff/1000);
+  const m = Math.floor(s/60);
+  const h = Math.floor(m/60);
+  const d = Math.floor(h/24);
+  document.getElementById("contador").innerHTML =
+    `Mi amor por ti comenzó hace...<br>
+     ${d} días ${h%24} horas ${m%60} minutos ${s%60} segundos`;
 }
 
-setInterval(actualizarContador, 1000);
-actualizarContador();
-
-/* ❤️ CORAZONES CAYENDO */
-function crearCorazon() {
-    const c = document.createElement("div");
-    c.className = "fall";
-    c.innerHTML = "❤️";
-    c.style.left = Math.random() * 100 + "vw";
-    c.style.fontSize = (15 + Math.random() * 20) + "px";
-    c.style.animationDuration = (3 + Math.random() * 5) + "s";
-    document.body.appendChild(c);
-    setTimeout(() => c.remove(), 8000);
-}
-
-setInterval(crearCorazon, 300);
+setInterval(actualizar,1000);
+actualizar();
 </script>
 
 </body>
