@@ -18,22 +18,23 @@ body {
 .container {
     position: relative;
     background: #fff8f8;
-    width: 90%;
-    max-width: 800px;
+    width: 92%;
+    max-width: 900px;
     margin: auto;
     top: 50%;
     transform: translateY(-50%);
     padding: 30px;
-    border-radius: 15px;
+    border-radius: 18px;
     display: flex;
-    box-shadow: 0 15px 30px rgba(0,0,0,.2);
+    gap: 20px;
+    box-shadow: 0 20px 40px rgba(0,0,0,.25);
     z-index: 2;
 }
 
 .text {
     flex: 1;
     font-size: 1.2rem;
-    line-height: 1.7;
+    line-height: 1.8;
 }
 
 .text h2 {
@@ -47,6 +48,7 @@ body {
     color: #555;
 }
 
+/* 🌳 ÁRBOL DE CORAZONES */
 .tree {
     flex: 1;
     display: flex;
@@ -55,33 +57,48 @@ body {
 }
 
 .heart-tree {
-    font-size: 7rem;
+    position: relative;
+    width: 200px;
+    height: 280px;
+}
+
+.heart {
+    position: absolute;
+    color: #e63946;
+    font-size: 24px;
+    animation: beat 2s infinite;
+}
+
+@keyframes beat {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.2); }
+}
+
+/* Tronco */
+.trunk {
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 40px;
 }
 
 /* Corazones cayendo */
-.heart {
+.fall {
     position: absolute;
-    color: rgba(255,0,100,.7);
-    font-size: 20px;
+    color: rgba(255,0,100,.8);
     animation: fall linear infinite;
 }
 
 @keyframes fall {
-    0% {
-        transform: translateY(-10vh);
-        opacity: 1;
-    }
-    100% {
-        transform: translateY(110vh);
-        opacity: 0;
-    }
+    0% { transform: translateY(-10vh); opacity: 1; }
+    100% { transform: translateY(110vh); opacity: 0; }
 }
 </style>
 </head>
 
 <body>
 
-<!-- Música -->
 <audio autoplay loop>
   <source src="https://cdn.pixabay.com/audio/2023/02/14/audio_4b4d1bfa50.mp3" type="audio/mpeg">
 </audio>
@@ -104,46 +121,54 @@ body {
     </div>
 
     <div class="tree">
-        <div class="heart-tree">🌳❤️</div>
+        <div class="heart-tree">
+            <!-- copa -->
+            <span class="heart" style="top:20px; left:80px;">❤️</span>
+            <span class="heart" style="top:40px; left:40px;">❤️</span>
+            <span class="heart" style="top:40px; left:120px;">❤️</span>
+            <span class="heart" style="top:70px; left:20px;">❤️</span>
+            <span class="heart" style="top:70px; left:80px;">❤️</span>
+            <span class="heart" style="top:70px; left:140px;">❤️</span>
+            <span class="heart" style="top:110px; left:50px;">❤️</span>
+            <span class="heart" style="top:110px; left:110px;">❤️</span>
+
+            <!-- tronco -->
+            <div class="trunk">🤎</div>
+        </div>
     </div>
 </div>
 
 <script>
-/* CONTADOR EXACTO */
+/* ⏳ CONTADOR */
 const inicio = new Date("2026-02-01T00:00:00");
 
 function actualizarContador() {
     const ahora = new Date();
     let diff = ahora - inicio;
 
-    const segundos = Math.floor(diff / 1000);
-    const minutos = Math.floor(segundos / 60);
-    const horas = Math.floor(minutos / 60);
-    const dias = Math.floor(horas / 24);
-
-    const h = horas % 24;
-    const m = minutos % 60;
-    const s = segundos % 60;
+    const s = Math.floor(diff / 1000);
+    const m = Math.floor(s / 60);
+    const h = Math.floor(m / 60);
+    const d = Math.floor(h / 24);
 
     document.getElementById("contador").innerHTML =
         `Mi amor por ti comenzó hace...<br>
-        ${dias} días ${h} horas ${m} minutos ${s} segundos`;
+        ${d} días ${h%24} horas ${m%60} minutos ${s%60} segundos`;
 }
 
 setInterval(actualizarContador, 1000);
 actualizarContador();
 
-/* CORAZONES CAYENDO */
+/* ❤️ CORAZONES CAYENDO */
 function crearCorazon() {
-    const heart = document.createElement("div");
-    heart.className = "heart";
-    heart.innerHTML = "❤️";
-    heart.style.left = Math.random() * 100 + "vw";
-    heart.style.animationDuration = (3 + Math.random() * 5) + "s";
-    heart.style.fontSize = (15 + Math.random() * 20) + "px";
-    document.body.appendChild(heart);
-
-    setTimeout(() => heart.remove(), 8000);
+    const c = document.createElement("div");
+    c.className = "fall";
+    c.innerHTML = "❤️";
+    c.style.left = Math.random() * 100 + "vw";
+    c.style.fontSize = (15 + Math.random() * 20) + "px";
+    c.style.animationDuration = (3 + Math.random() * 5) + "s";
+    document.body.appendChild(c);
+    setTimeout(() => c.remove(), 8000);
 }
 
 setInterval(crearCorazon, 300);
